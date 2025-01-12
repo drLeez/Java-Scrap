@@ -1,0 +1,43 @@
+TrackName
+{
+    SeriesName (optional)
+    [
+        HitName;
+        Easing;
+        time;
+        repeat;
+        TYPE;
+        target (x,y,z);
+        |
+        ...
+    ]
+}
+
+TrackName
+{
+    SeriesName (optional)
+    [
+        hitName: ...;
+        easing: ...;
+        time: ...;
+        repeat: ...;
+        type: ...;
+        target: ...;
+        |
+        ...
+    ]
+}
+
+name: "TestTrack";
+type: "Moveable";
+[
+    Turn1
+    {
+        hitName: "head";
+        easing: "InOutCirc";
+        time: 1;
+        repeat: 0;
+        type: "ROT";
+        target: (_, +180, _);
+    }
+]

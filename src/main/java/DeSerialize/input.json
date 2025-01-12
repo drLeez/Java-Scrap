@@ -1,0 +1,23 @@
+[
+    {
+        "name": "TestTrack",
+        "rows":
+        [
+            {
+                "name": "Turn1",
+                "list":
+                [
+                    {
+                        "hitName": "head",
+                        "easing": "InOutCirc",
+                        "time": 1,
+                        "repeat": 0,
+                        "type": "ROT",
+                        "target": "_, +180, _"
+                    }
+                ]
+            }
+        ],
+        "type": null
+    }
+]
