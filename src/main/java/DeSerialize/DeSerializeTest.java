@@ -14,24 +14,20 @@ public class DeSerializeTest
     {
         var test = Files.readString(PathHelpers.LocalOf("assets/input.json"));
 
-//        System.out.println(test);
-        var obj = new JsonObject(null, null, JsonObject.JsonType.Array);
-        try
-        {
-            obj.read(test);
-        }
-        catch (Exception e)
-        {
-            System.out.println(e);
-        }
+        var obj = JsonHelper.Parse(test);
         System.out.println();
     }
 
-    public static class JsonObject
+    public static class JsonHelper
     {
-        public LinkedList<JsonObject> children = new LinkedList<>();
+        public LinkedList<JsonHelper> children = new LinkedList<>();
         public String name, value;
         public JsonType type;
+
+        public boolean hasChildren()
+        {
+            return !children.isEmpty();
+        }
 
         public enum JsonType
         {
@@ -42,7 +38,13 @@ public class DeSerializeTest
             None
         }
 
-        public JsonObject(String name, String value, JsonType type)
+        public static JsonHelper Parse(String s)
+        {
+            var ret = new JsonHelper(null, null, JsonType.None);
+            ret.read(s);
+            return ret;
+        }
+        public JsonHelper(String name, String value, JsonType type)
         {
             this.name = name;
             this.value = value;
@@ -59,9 +61,9 @@ public class DeSerializeTest
                 first = s.charAt(0);
                 if (first == '[' || first == '{')
                 {
-                    type = first == '[' ? JsonType.Array : JsonType.Object;
+                    var ctype = first == '[' ? JsonType.Array : JsonType.Object;
                     var end = FindLevelNonQuoteIndexOf(s, first, first == '[' ? ']' : '}');
-                    var child = new JsonObject(_complexLabel, null, JsonType.None);
+                    var child = new JsonHelper(_complexLabel, null, ctype);
                     _complexLabel = null;
                     children.add(child);
                     child.read(s.substring(1, end));
@@ -80,16 +82,16 @@ public class DeSerializeTest
                     if (rf == '"')
                     {
                         var end = right.indexOf('"', 1);
-                        children.add(new JsonObject(left, right.substring(1, end), JsonType.String));
+                        children.add(new JsonHelper(left, right.substring(1, end), JsonType.String));
                         s = right.substring(end + 1);
                     }
                     else if (Character.isDigit(rf))
                     {
                         var end = right.indexOf(',');
-                        if (end == -1) children.add(new JsonObject(left, right, JsonType.Number));
+                        if (end == -1) children.add(new JsonHelper(left, right, JsonType.Number));
                         else
                         {
-                            children.add(new JsonObject(left, right.substring(0, end), JsonType.Number));
+                            children.add(new JsonHelper(left, right.substring(0, end), JsonType.Number));
                             s = right.substring(end);
                         }
                     }
@@ -106,11 +108,11 @@ public class DeSerializeTest
                         var easySub = right.substring(0, end == -1 ? right.length() : end).trim();
                         if (Character.isDigit(rf))
                         {
-                            children.add(new JsonObject(left, easySub, JsonType.Number));
+                            children.add(new JsonHelper(left, easySub, JsonType.Number));
                         }
                         else if (easySub.equals("null"))
                         {
-                            children.add(new JsonObject(left, null, JsonType.Object));
+                            children.add(new JsonHelper(left, null, JsonType.Object));
                         }
                         s = end == -1 ? "" : right.substring(end);
                     }
