@@ -1,5 +1,7 @@
 package DeSerialize;
 
+import org.example.PathHelpers;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,7 +12,7 @@ public class DeSerializeTest
 {
     public static void Init() throws IOException
     {
-        var test = Files.readString(Path.of("C:\\Projects\\Scrap\\src\\main\\java\\DeSerialize\\input.json"));
+        var test = Files.readString(PathHelpers.LocalOf("assets/input.json"));
 
 //        System.out.println(test);
         var obj = new JsonObject(null, null, JsonObject.JsonType.Array);
